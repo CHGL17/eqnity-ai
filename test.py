@@ -1,7 +1,7 @@
 import os
 import soundfile as sf
 
-path = "C:\\Users\\root\\Documents\\REAPER Media\\Media\\temp_audio\\tmphaw6hzgb.wav\\test-ai.wav"
+path = "C:\\Users\\root\\Documents\\REAPER Media\\Media\\temp_audio\\tmpc42hnlyf.wav\\test-ai.wav"
 print(os.path.getsize(path))
 
 with open(path, "rb") as f:
