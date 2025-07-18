@@ -58,6 +58,7 @@ def analyze_track_audio(track_name: str, duration: int = 10) -> str:
             track.select()
     
             # Renderizar (guardar como archivo)
+            # Pon en primer plano reaper para evitar problemas de pistas offline
             project.perform_action(41824)
             project.perform_action(40078)  # Render to file
     
