@@ -3,8 +3,9 @@ import uuid
 import base64
 import gradio as gr
 from styles import theme_aware_css
-from chat import chat_function, clear_conversation
+from chat import chat_function, clear_conversation, update_language
 from tools.ml_tools import analyze_uploaded_audio, suggest_audio_processing, separate_audio_placeholder
+from i18n.utils import i18n, t
 
 def get_image_base64(image_path):
     """Convierte una imagen a base64 para embedder en HTML"""
@@ -20,27 +21,40 @@ def build_ui():
         css=theme_aware_css
     ) as demo:
         with gr.Column(elem_classes="main-container"):
-            gr.HTML(f"""
-                <div class="header">
-                    {f"<img src='data:image/png;base64,{get_image_base64('assets/eqnity.png')}' alt='EQnity AI Logo' style='height:64px;width:64px;'>"}
-                    <div>
-                        <h1>EQnity AI</h1>
-                        <p>Tu asistente inteligente para producción musical en Reaper</p>
+            # Header con soporte dinámico de idioma
+            header_html = gr.HTML(elem_id="header-container")
+            
+            def update_header():
+                return f"""
+                    <div class="header">
+                        {f"<img src='data:image/png;base64,{get_image_base64('assets/eqnity.png')}' alt='EQnity AI Logo' style='height:64px;width:64px;'>"}
+                        <div>
+                            <h1>{t('app_title')}</h1>
+                            <p>{t('app_subtitle')}</p>
+                        </div>
                     </div>
-                </div>
-            """)
+                """
 
             session_id = gr.State(value=str(uuid.uuid4()))
+            
+            # Selector de idioma
+            with gr.Row():
+                language_selector = gr.Dropdown(
+                    choices=[("Español", "es"), ("English", "en")],
+                    value=i18n.current_lang,
+                    label=t('language'),
+                    scale=1
+                )
             
             with gr.Row(equal_height=False):
                 with gr.Column(scale=3):
                     with gr.Column(elem_classes="chat-column"):
                         chatbot = gr.Chatbot(
-                            label="Conversación",
+                            label=t('conversation'),
                             type="messages",
                             value=[{
                                 "role": "assistant",
-                                "content": "¡Hola! Soy EQnity AI. Puedo ayudarte a analizar y mejorar tus pistas de audio en Reaper. ¿Qué necesitas?"
+                                "content": t('welcome_message')
                             }],
                             elem_id="chatbot",
                             bubble_full_width=False,
@@ -50,21 +64,21 @@ def build_ui():
                         )
                         with gr.Row():
                             msg = gr.Textbox(
-                                placeholder="Ej: 'Analiza la pista de bajo y mejora su claridad'",
+                                placeholder=t('input_placeholder'),
                                 show_label=False,
                                 lines=2,
                                 scale=8,
                                 autofocus=True,
                                 container=False
                             )
-                            send = gr.Button("Enviar", scale=1, variant="primary")
+                            send = gr.Button(t('send'), scale=1, variant="primary")
                 
                 with gr.Column(scale=1):
                     # Sección de análisis ML
                     with gr.Column():
-                        gr.Markdown("### 🤖 Análisis con ML")
+                        ml_analysis_label = gr.Markdown(f"### {t('ml_analysis')}")
                         audio_upload = gr.Audio(
-                            label="Pista de Audio",
+                            label=t('audio_track'),
                             type="filepath",
                             elem_id="audio-player",
                             autoplay=False,
@@ -72,39 +86,44 @@ def build_ui():
                         )
                         
                         with gr.Row(elem_classes='button-row'):
-                            analyze_btn = gr.Button("🔍 Analizar", scale=1, variant="primary")
-                            suggest_btn = gr.Button("💡 Sugerir procesamiento", scale=1, variant="secondary")
-                            separate_btn = gr.Button("🎵 Separar instrumentos", scale=1, variant="secondary")
+                            analyze_btn = gr.Button(t('analyze'), scale=1, variant="primary")
+                            suggest_btn = gr.Button(t('suggest_processing'), scale=1, variant="secondary")
+                            separate_btn = gr.Button(t('separate_instruments'), scale=1, variant="secondary")
 
-                    clear = gr.Button("🗑️ Borrar Conversación", variant='huggingface')
+                    clear = gr.Button(t('clear_conversation'), variant='huggingface')
             
-            gr.Examples(
-                examples=[
-                    "La pista de bajo suena muy embarrada, analízala y arréglala",
-                    "Normaliza el volumen de todas las pistas y aplica un limitador suave al master",
-                    "Analiza el espectro de frecuencias de la pista 'Vocals' y sugiere mejoras",
-                ],
-                inputs=msg,
-                label="💬 Ejemplos"
-            )
+            # Ejemplos - usando un Markdown en lugar de Examples para poder actualizarlo
+            examples_markdown = gr.Markdown(elem_id="examples-section")
             
-            gr.Markdown("""
-            ### 📋 Comandos Rápidos
-            - **Análisis:** "Analiza la pista X"
-            - **Procesamiento:** "Normaliza el volumen"
-            - **Exportación:** "Exporta la pista"
+            def get_examples_html():
+                return f"""
+### {t('examples_title')}
+- {t('example_1')}
+- {t('example_2')}
+- {t('example_3')}
+                """
             
-            ### 🤖 Análisis ML
-            - Sube un audio para análisis automático con machine learning
-            - Obtén sugerencias de procesamiento basadas en características del audio
-            - Separación de instrumentos (próximamente)
+            # Información adicional
+            info_markdown = gr.Markdown(elem_id="info-markdown")
             
-            ### 💡 Tips
-            - Sé específico con los nombres de pista.
-            - El agente mostrará su proceso de pensamiento antes de la respuesta final.
-            """)
+            def update_info_text():
+                return f"""
+### {t('quick_commands')}
+- {t('analysis_cmd')}
+- {t('processing_cmd')}
+- {t('export_cmd')}
 
-        # Funciones existentes
+### {t('ml_analysis')}
+- {t('upload_audio_first')}
+- Obtén sugerencias de procesamiento basadas en características del audio
+- Separación de instrumentos (próximamente)
+
+### {t('tips')}
+{t('tip_specific')}
+{t('tip_thinking')}
+                """
+
+        # Funciones existentes actualizadas
         def send_message(message, history, session_id):
             if not message.strip():
                 return history, ""
@@ -116,39 +135,64 @@ def build_ui():
             for updated_history in chat_function(user_message, history, session_id):
                 yield updated_history
 
-        # Funciones ML nuevas
+        # Funciones ML actualizadas
         def handle_analyze_audio(audio_path, history):
             if not audio_path:
-                history.append({"role": "assistant", "content": "Por favor, sube un archivo de audio primero."})
+                history.append({"role": "assistant", "content": t('upload_audio_first')})
                 return history
             
-            # Agregar mensaje del usuario simulado
-            history.append({"role": "user", "content": f"Analiza el audio: {os.path.basename(audio_path)}"})
-            
-            # Obtener y agregar respuesta del análisis
+            history.append({"role": "user", "content": f"{t('analyze_audio')}: {os.path.basename(audio_path)}"})
             result = analyze_uploaded_audio.invoke({"audio_path": audio_path})
             history.append({"role": "assistant", "content": result})
             return history
 
         def handle_suggest_processing(audio_path, history):
             if not audio_path:
-                history.append({"role": "assistant", "content": "Por favor, sube un archivo de audio primero."})
+                history.append({"role": "assistant", "content": t('upload_audio_first')})
                 return history
             
-            history.append({"role": "user", "content": f"Sugiere procesamiento para: {os.path.basename(audio_path)}"})
+            history.append({"role": "user", "content": f"{t('suggest_processing_for')}: {os.path.basename(audio_path)}"})
             result = suggest_audio_processing.invoke({"audio_path": audio_path})
             history.append({"role": "assistant", "content": result})
             return history
 
         def handle_separate_audio(audio_path, history):
             if not audio_path:
-                history.append({"role": "assistant", "content": "Por favor, sube un archivo de audio primero."})
+                history.append({"role": "assistant", "content": t('upload_audio_first')})
                 return history
             
-            history.append({"role": "user", "content": f"Separa instrumentos de: {os.path.basename(audio_path)}"})
+            history.append({"role": "user", "content": f"{t('separate_instruments_from')}: {os.path.basename(audio_path)}"})
             result = separate_audio_placeholder(audio_path)
             history.append({"role": "assistant", "content": result})
             return history
+
+        # Función para cambiar idioma
+        def change_language(lang_value, history):
+            update_language(lang_value)
+            
+            # Actualizar el mensaje inicial del chatbot
+            new_history = [{
+                "role": "assistant",
+                "content": t('welcome_message')
+            }]
+            
+            # Retornar todos los componentes actualizados
+            return (
+                update_header(),  # header_html
+                new_history,  # chatbot value
+                gr.update(label=t('conversation')),  # chatbot label
+                gr.update(placeholder=t('input_placeholder')),  # msg
+                gr.update(value=t('send')),  # send button
+                gr.update(label=t('audio_track')),  # audio_upload
+                gr.update(value=t('analyze')),  # analyze_btn
+                gr.update(value=t('suggest_processing')),  # suggest_btn
+                gr.update(value=t('separate_instruments')),  # separate_btn
+                gr.update(value=t('clear_conversation')),  # clear button
+                f"### {t('ml_analysis')}",  # ml_analysis_label
+                get_examples_html(),  # examples_markdown
+                update_info_text(),  # info_markdown
+                gr.update(label=t('language'))  # language_selector
+            )
 
         # Event handlers existentes
         msg.submit(
@@ -178,7 +222,7 @@ def build_ui():
             queue=False
         )
 
-        # Event handlers ML nuevos
+        # Event handlers ML
         analyze_btn.click(
             handle_analyze_audio,
             inputs=[audio_upload, chatbot],
@@ -195,6 +239,34 @@ def build_ui():
             handle_separate_audio,
             inputs=[audio_upload, chatbot],
             outputs=[chatbot]
+        )
+
+        # Event handler para cambio de idioma
+        language_selector.change(
+            fn=change_language,
+            inputs=[language_selector, chatbot],
+            outputs=[
+                header_html,
+                chatbot,
+                chatbot,
+                msg,
+                send,
+                audio_upload,
+                analyze_btn,
+                suggest_btn,
+                separate_btn,
+                clear,
+                ml_analysis_label,
+                examples_markdown,
+                info_markdown,
+                language_selector
+            ]
+        )
+
+        # Cargar valores iniciales
+        demo.load(
+            fn=lambda: (update_header(), get_examples_html(), update_info_text()),
+            outputs=[header_html, examples_markdown, info_markdown]
         )
 
     return demo

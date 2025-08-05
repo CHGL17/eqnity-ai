@@ -103,6 +103,7 @@ Para que EQnity pueda comunicarse con Reaper, es necesario configurar `reapy` co
 
 EQnity está en continuo desarrollo. Las próximas grandes características planeadas son:
 
+*   [ ] **Base de conocimientos:** Integrar una base de datos de conocimientos (RAG) musicales para respuestas más informadas.
 *   [ ] **Separación de Stems:** Integrar un modelo como Spleeter para separar automáticamente una pista en vocales, bajo, batería, etc. (ya existe un placeholder en `tools/ml_tools.py`).
 *   [ ] **Aprendizaje de Presets:** Capacidad para analizar los presets de VST de tus artistas favoritos y aplicar estilos similares a tus pistas.
 *   [ ] **Análisis Espectral Avanzado:** Generar y mostrar gráficos del espectro de frecuencia directamente en la interfaz.
@@ -117,3 +118,9 @@ EQnity está en continuo desarrollo. Las próximas grandes características plan
 3.  Haz commit de tus cambios (`git commit -m 'Añade una increíble funcionalidad'`).
 4.  Haz push a la rama (`git push origin feature/amazing-feature`).
 5.  Abre un Pull Request detallando tus cambios y la nueva funcionalidad.
+
+## 📜 Licencia
+Este proyecto está bajo la Licencia MIT. Consulta el archivo [LICENSE](LICENSE) para más detalles.
+
+## Agradecimientos
+-   [Reapy](https://github.com/RomeoDespres/reapy) por facilitar la interacción con Reaper.
