@@ -122,5 +122,6 @@ EQnity está en continuo desarrollo. Las próximas grandes características plan
 ## 📜 Licencia
 Este proyecto está bajo la Licencia MIT. Consulta el archivo [LICENSE](LICENSE) para más detalles.
 
-## Agradecimientos
--   [Reapy](https://github.com/RomeoDespres/reapy) por facilitar la interacción con Reaper.
+Al utilizar este software o partes de él, se requiere incluir el aviso de copyright original y la información de la licencia.
+
+##
