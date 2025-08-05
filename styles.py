@@ -11,13 +11,16 @@ theme_aware_css = """
 
 /* Contenedor principal y cabecera */
 .header {
-    text-align: center;
-    padding: 20px 0;
+    text-align: left;
+    padding: 20px 40px;
     background: linear-gradient(90deg, rgb(7, 174, 234) 0%, rgb(43, 245, 152) 100%);
     color: white;
     border-radius: var(--radius-lg);
     margin-bottom: var(--spacing-xxl);
     box-shadow: var(--shadow-drop-lg);
+    display: flex;
+    gap: 20px;
+    align-items: center;
 }
 .header h1 { margin: 0; font-size: var(--text-xxl); font-weight: bold; }
 .header p { margin: 10px 0 0 0; font-size: var(--text-lg); opacity: 0.9; }
@@ -69,5 +72,10 @@ theme_aware_css = """
 }
 .dark .thinking-content code {
     color: var(--primary-300);
+}
+.button-row {
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);    
+    display: flex;
 }
 """

@@ -9,6 +9,7 @@ from tools.vst_tools import (
     add_vst_to_track, remove_vst_from_track
 )
 from tools.audio_tools import analyze_track_audio
+from tools.ml_tools import analyze_uploaded_audio, suggest_audio_processing
 
 # --- 1. Configuración de herramientas ---
 tools = [
@@ -17,7 +18,10 @@ tools = [
     set_multiple_vst_parameters,
     add_vst_to_track,
     remove_vst_from_track,
-    analyze_track_audio
+    analyze_track_audio,
+    analyze_uploaded_audio,
+    suggest_audio_processing,
+    # separate_audio_full
 ]
 
 # --- 2. Configuración del modelo ---

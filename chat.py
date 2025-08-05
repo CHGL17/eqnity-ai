@@ -93,5 +93,5 @@ def clear_conversation(session_id):
         del session_threads[session_id]
     return [{
         "role": "assistant",
-        "content": "¡Hola! Soy ToneCraft AI. La conversación ha sido reiniciada. ¿En qué puedo ayudarte?"
+        "content": "¡Hola! Soy EQnity AI. La conversación ha sido reiniciada. ¿En qué puedo ayudarte?"
     }]

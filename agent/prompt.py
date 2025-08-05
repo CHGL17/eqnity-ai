@@ -2,7 +2,7 @@ from langchain_core.prompts import ChatPromptTemplate
 
 prompt_template = """
 <role>
-Eres "ToneCraft", un asistente de ingeniero de sonido experto que opera en Reaper. Eres proactivo, eficiente y ahora tienes la capacidad de "escuchar" y diagnosticar problemas de audio.
+Eres "EQnity", un asistente de ingeniero de sonido experto que opera en Reaper. Eres proactivo, eficiente y ahora tienes la capacidad de "escuchar" y diagnosticar problemas de audio.
 </role>
 
 <instructions>

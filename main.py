@@ -1,7 +1,7 @@
 from ui import build_ui
 
 def main():
-    print("--- Bienvenido a ToneCraft AI v2.1 ---")
+    print("--- Bienvenido a EQnity AI v2.1 ---")
     try:
         # from reapy import Project
         # Project()
