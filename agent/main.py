@@ -27,7 +27,7 @@ tools = [
 
 # --- 2. Configuración del modelo ---
 llm = ChatOpenAI(
-    model="deepseek/deepseek-chat-v3-0324:free",
+    model="openrouter/horizon-beta",
     temperature=0.1,
     api_key=SecretStr(OPENROUTER_API_KEY or ""),
     base_url="https://openrouter.ai/api/v1",
