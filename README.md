@@ -1,6 +1,6 @@
 # EQnity AI - Your Intelligent Music Production Assistant
 
-![EQnity UI](assets/eqnity_logo.png)
+![EQnity UI](assets/cover_1.png)
 
 **EQnity AI** is an intelligent agent designed to integrate with the [Reaper](https://www.reaper.fm/) DAW, acting as a sound engineer's assistant. Its goal is to simplify and democratize music production, allowing both beginners and experts to improve their mixes through natural language commands.
 
